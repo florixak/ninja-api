@@ -26,8 +26,16 @@ export class AppConfigService {
     return this.configService.get('JWT_SECRET', { infer: true });
   }
 
-  get jwtExpiresIn(): string {
+  get jwtExpiresIn(): number {
     return this.configService.get('JWT_EXPIRES_IN', { infer: true });
+  }
+
+  get adminEmail(): string {
+    return this.configService.get('ADMIN_EMAIL', { infer: true });
+  }
+
+  get adminPassword(): string {
+    return this.configService.get('ADMIN_PASSWORD', { infer: true });
   }
 
   get isProduction(): boolean {
