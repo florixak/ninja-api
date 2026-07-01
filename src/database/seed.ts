@@ -32,7 +32,9 @@ async function seedAdmin(): Promise<void> {
   console.log(`Admin user created: ${env.ADMIN_EMAIL}`);
 }
 
-seedAdmin().catch((error: unknown) => {
-  console.error('Seed failed:', error);
-  process.exit(1);
-});
+seedAdmin()
+  .then(() => process.exit(0))
+  .catch((error: unknown) => {
+    console.error('Seed failed:', error);
+    process.exit(1);
+  });
