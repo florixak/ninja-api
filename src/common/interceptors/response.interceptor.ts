@@ -13,6 +13,10 @@ export class ResponseInterceptor<T> implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     return next.handle().pipe(
       map((data: T) => {
+        if (data === undefined) {
+          return data;
+        }
+
         if (this.isApiSuccessResponse(data)) {
           return data;
         }
