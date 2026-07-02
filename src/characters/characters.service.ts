@@ -88,7 +88,7 @@ export class CharactersService {
         ),
       );
     }
-    if (season) {
+    if (season !== undefined) {
       conditions.push(
         exists(
           this.db
