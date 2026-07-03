@@ -1,9 +1,17 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { CharacterListItemDto } from 'src/characters/dto/character-response.dto';
 
 export class ElementListItemDto {
   @ApiProperty() id: number;
   @ApiProperty() name: string;
+}
+
+export class ElementMasterListItemDto {
+  @ApiProperty() id: number;
+  @ApiProperty() name: string;
+  @ApiProperty({
+    description: 'Whether the character is the current master of the element',
+  })
+  isActive: boolean;
 }
 
 export class ElementDetailDto extends ElementListItemDto {
@@ -16,9 +24,9 @@ export class ElementDetailDto extends ElementListItemDto {
   })
   description: string | null;
   @ApiProperty({
-    type: [CharacterListItemDto],
+    type: [ElementMasterListItemDto],
     description:
       'List of element masters that have this element or had it in the past',
   })
-  masters: CharacterListItemDto[];
+  masters: ElementMasterListItemDto[];
 }

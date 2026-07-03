@@ -21,6 +21,7 @@ import { ElementQueryDto } from './dto/element-query.dto';
 import {
   ElementDetailDto,
   ElementListItemDto,
+  ElementMasterListItemDto,
 } from './dto/element-response.dto';
 import { UpdateElementDto } from './dto/update-element.dto';
 
@@ -108,14 +109,9 @@ export class ElementsService {
 
     const masterRows = await this.db
       .select({
-        id: characters.id,
-        name: characters.name,
-        description: characters.description,
-        aliases: characters.aliases,
-        species: characters.species,
-        status: characters.status,
-        createdAt: characters.createdAt,
-        updatedAt: characters.updatedAt,
+        characterId: characters.id,
+        characterName: characters.name,
+        isActive: charactersToElements.isActive,
       })
       .from(charactersToElements)
       .innerJoin(
@@ -124,13 +120,19 @@ export class ElementsService {
       )
       .where(eq(charactersToElements.elementId, id));
 
+    const masters: ElementMasterListItemDto[] = masterRows.map((row) => ({
+      id: row.characterId,
+      name: row.characterName,
+      isActive: row.isActive,
+    }));
+
     return {
       id: element.id,
       name: element.name,
       description: element.description,
       createdAt: element.createdAt,
       updatedAt: element.updatedAt,
-      masters: masterRows,
+      masters,
     };
   }
 
