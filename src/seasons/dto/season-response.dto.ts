@@ -9,8 +9,6 @@ export class SeasonListItemDto {
   @ApiProperty() episodesCount: number;
   @ApiProperty({ nullable: true }) releaseYear: number | null;
   @ApiProperty({ nullable: true }) mainAntagonist: string | null;
-  @ApiProperty() createdAt: Date;
-  @ApiProperty() updatedAt: Date;
 }
 
 export class SeasonCharacterDto {
@@ -38,4 +36,7 @@ export class SeasonDetailDto extends SeasonListItemDto {
 
   @ApiProperty({ type: [SeasonLocationDto] })
   locations: SeasonLocationDto[];
+
+  @ApiProperty() createdAt: Date;
+  @ApiProperty() updatedAt: Date;
 }
