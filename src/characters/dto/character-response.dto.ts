@@ -7,8 +7,6 @@ export class CharacterListItemDto {
   @ApiProperty({ type: [String], nullable: true }) aliases: string[] | null;
   @ApiProperty({ nullable: true }) species: string | null;
   @ApiProperty({ nullable: true }) status: string | null;
-  @ApiProperty() createdAt: Date;
-  @ApiProperty() updatedAt: Date;
 }
 
 export class CharacterElementDto {
@@ -34,4 +32,6 @@ export class CharacterDetailDto extends CharacterListItemDto {
   @ApiProperty({ type: [CharacterElementDto] }) elements: CharacterElementDto[];
   @ApiProperty({ type: [CharacterWeaponDto] }) weapons: CharacterWeaponDto[];
   @ApiProperty({ type: [CharacterSeasonDto] }) seasons: CharacterSeasonDto[];
+  @ApiProperty() createdAt: Date;
+  @ApiProperty() updatedAt: Date;
 }
