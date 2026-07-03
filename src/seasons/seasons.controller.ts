@@ -43,17 +43,6 @@ export class SeasonsController {
     return this.seasonsService.findAll(query);
   }
 
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a season by id' })
-  @ApiResponse({
-    status: 200,
-    description: 'Season fetched successfully',
-    type: SeasonDetailDto,
-  })
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<SeasonDetailDto> {
-    return this.seasonsService.findOne(id);
-  }
-
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(Role.ADMIN)
@@ -66,6 +55,17 @@ export class SeasonsController {
   })
   create(@Body() createSeasonDto: CreateSeasonDto): Promise<SeasonDetailDto> {
     return this.seasonsService.create(createSeasonDto);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a season by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Season fetched successfully',
+    type: SeasonDetailDto,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<SeasonDetailDto> {
+    return this.seasonsService.findOne(id);
   }
 
   @Patch(':id')
