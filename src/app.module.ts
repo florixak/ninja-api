@@ -30,7 +30,10 @@ import { APP_GUARD } from '@nestjs/core';
       ],
       skipIf: (context) => {
         const request = context.switchToHttp().getRequest<{ url?: string }>();
-        return request.url?.startsWith('/docs') ?? false;
+        return (
+          request.url === '/docs' ||
+          (request.url?.startsWith('/docs/') ?? false)
+        );
       },
     }),
     AppConfigModule,
