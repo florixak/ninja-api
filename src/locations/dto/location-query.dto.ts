@@ -1,6 +1,9 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsIn, IsInt, IsOptional, IsString } from 'class-validator';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+
+const SORTABLE_FIELDS = ['name'] as const;
 
 export class LocationQueryDto extends PaginationQueryDto {
   @ApiPropertyOptional({
@@ -14,13 +17,20 @@ export class LocationQueryDto extends PaginationQueryDto {
     description: 'Realm ID',
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   realmId?: number;
 
   @ApiPropertyOptional({
     description: 'Season ID',
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsInt()
   seasonId?: number;
+
+  @ApiPropertyOptional({ enum: SORTABLE_FIELDS, default: 'name' })
+  @IsOptional()
+  @IsIn(SORTABLE_FIELDS)
+  declare sortBy?: (typeof SORTABLE_FIELDS)[number];
 }
