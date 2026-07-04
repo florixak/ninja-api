@@ -11,6 +11,7 @@ import { RealmsModule } from './realms/realms.module';
 import { SeasonsModule } from './seasons/seasons.module';
 import { ElementsModule } from './elements/elements.module';
 import { LocationsModule } from './locations/locations.module';
+import { WeaponsModule } from './weapons/weapons.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { LocationsModule } from './locations/locations.module';
     SeasonsModule,
     ElementsModule,
     LocationsModule,
+    WeaponsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
