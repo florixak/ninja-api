@@ -40,9 +40,11 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('docs', app, document);
-
   const configService = app.get(AppConfigService);
+  if (!configService.isProduction) {
+    SwaggerModule.setup('docs', app, document);
+  }
+
   await app.listen(configService.port);
 }
 bootstrap();
