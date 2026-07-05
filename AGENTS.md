@@ -147,6 +147,29 @@ Elasticsearch, microservices, OAuth providers, BetterAuth, native DB enums,
 GIN/trigram indexes, generic filter engine, repository layer (unless
 actually necessary).
 
+## API versioning
+
+- Implemented via NestJS built-in `app.enableVersioning({ type: VersioningType.URI, defaultVersion: '1' })`
+  in `main.ts`, combined with `app.setGlobalPrefix('api')` (prefix and version are
+  separate concerns — Nest inserts the version between them automatically).
+- Existing controllers need no `version` property — they implicitly fall under `v1`
+  via `defaultVersion`.
+- When a breaking change is needed for a specific resource, add a new controller
+  class with `@Controller({ path: '<resource>', version: '2' })` alongside the
+  existing v1 controller (both registered in the same module's `controllers` array).
+  Both versions then run live, simultaneously, in the same deployment — no separate
+  deploy or git branch switching required for this.
+- A `v1` git branch (kept as a snapshot/rollback point) is a separate, complementary
+  concern — it preserves source history, it does not by itself keep v1 "live" if the
+  deployed code changes.
+
+## V2 Roadmap (not implemented in V1, noted for future reference)
+
+- **Personal Access Tokens (PAT)** — planned addition alongside JWT auth. Will
+  require a new `api_tokens` table (hashed token, `user_id`, `expires_at`, `scopes`)
+  and a dedicated Guard/strategy that validates against that table instead of a
+  signed JWT. Out of scope for V1.
+
 ## Conventions for the agent
 
 - Generate files via `nest generate` where it makes sense.
