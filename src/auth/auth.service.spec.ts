@@ -52,10 +52,6 @@ describe('AuthService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(authService).toBeDefined();
-  });
-
   describe('login', () => {
     it('returns an access token for valid credentials', async () => {
       mockDb.limit.mockResolvedValue([mockUser]);

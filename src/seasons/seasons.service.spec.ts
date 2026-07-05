@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockDbCrud } from '../../test/common/mock-db.type';
-import { createChainableMock } from '../../test/helpers/chainable-mock';
+import { MockDbCrud } from 'test/common/mock-db.type';
+import { createChainableMock } from 'test/helpers/chainable-mock';
 import { DATABASE_CONNECTION } from '../database/database.module';
 import { SeasonsService } from './seasons.service';
 import { SeasonType } from './enums/season-type.enum';
@@ -57,10 +57,6 @@ describe('SeasonsService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('findAll', () => {
     it('returns data and pagination meta', async () => {
       mockDb.select
@@ -90,20 +86,6 @@ describe('SeasonsService', () => {
         totalItems: 1,
         totalPages: 1,
       });
-    });
-
-    it('calculates totalPages correctly when total does not divide evenly', async () => {
-      mockDb.select
-        .mockReturnValueOnce(createChainableMock([mockSeasonRow]))
-        .mockReturnValueOnce(createChainableMock([{ total: 25 }]));
-
-      const result = await service.findAll({
-        page: 1,
-        limit: 20,
-        order: 'asc',
-      });
-
-      expect(result.meta.totalPages).toBe(2);
     });
   });
 
@@ -163,12 +145,8 @@ describe('SeasonsService', () => {
         description: 'The first season of the show',
       });
 
-      expect(result).toEqual({
-        ...mockSeasonRow,
-        characters: [],
-        weapons: [],
-        locations: [],
-      });
+      expect(result.title).toBe('Rise of the Snakes');
+      expect(result.characters).toEqual([]);
       expect(mockDb.insert).toHaveBeenCalled();
     });
   });

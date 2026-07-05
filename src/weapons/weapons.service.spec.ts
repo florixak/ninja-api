@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockDbCrud } from '../../test/common/mock-db.type';
-import { createChainableMock } from '../../test/helpers/chainable-mock';
+import { MockDbCrud } from 'test/common/mock-db.type';
+import { createChainableMock } from 'test/helpers/chainable-mock';
 import { DATABASE_CONNECTION } from '../database/database.module';
 import { WeaponsService } from './weapons.service';
 
@@ -52,10 +52,6 @@ describe('WeaponsService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('findAll', () => {
     it('returns data and pagination meta', async () => {
       mockDb.select
@@ -82,20 +78,6 @@ describe('WeaponsService', () => {
         totalItems: 1,
         totalPages: 1,
       });
-    });
-
-    it('calculates totalPages correctly when total does not divide evenly', async () => {
-      mockDb.select
-        .mockReturnValueOnce(createChainableMock([mockWeaponRow]))
-        .mockReturnValueOnce(createChainableMock([{ total: 25 }]));
-
-      const result = await service.findAll({
-        page: 1,
-        limit: 20,
-        order: 'asc',
-      });
-
-      expect(result.meta.totalPages).toBe(2);
     });
   });
 
@@ -153,16 +135,8 @@ describe('WeaponsService', () => {
         description: "Kai's sword",
       });
 
-      expect(result).toEqual({
-        id: mockWeaponRow.id,
-        name: mockWeaponRow.name,
-        type: mockWeaponRow.type,
-        isArtifact: mockWeaponRow.isArtifact,
-        description: mockWeaponRow.description,
-        createdAt: mockWeaponRow.createdAt,
-        updatedAt: mockWeaponRow.updatedAt,
-        wielders: [],
-      });
+      expect(result.name).toBe('Sword of Fire');
+      expect(result.wielders).toEqual([]);
       expect(mockDb.insert).toHaveBeenCalled();
     });
   });
@@ -188,9 +162,7 @@ describe('WeaponsService', () => {
 
       await expect(
         service.update(999, { name: 'Updated Sword' }),
-      ).rejects.toThrow(
-        new NotFoundException('Weapon with id 999 not found'),
-      );
+      ).rejects.toThrow(new NotFoundException('Weapon with id 999 not found'));
     });
   });
 

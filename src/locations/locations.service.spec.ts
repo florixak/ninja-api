@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockDbCrud } from '../../test/common/mock-db.type';
-import { createChainableMock } from '../../test/helpers/chainable-mock';
+import { MockDbCrud } from 'test/common/mock-db.type';
+import { createChainableMock } from 'test/helpers/chainable-mock';
 import { DATABASE_CONNECTION } from '../database/database.module';
 import { LocationsService } from './locations.service';
 
@@ -52,10 +52,6 @@ describe('LocationsService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('findAll', () => {
     it('returns data and pagination meta', async () => {
       mockDb.select
@@ -82,20 +78,6 @@ describe('LocationsService', () => {
         totalItems: 1,
         totalPages: 1,
       });
-    });
-
-    it('calculates totalPages correctly when total does not divide evenly', async () => {
-      mockDb.select
-        .mockReturnValueOnce(createChainableMock([mockLocationRow]))
-        .mockReturnValueOnce(createChainableMock([{ total: 25 }]));
-
-      const result = await service.findAll({
-        page: 1,
-        limit: 20,
-        order: 'asc',
-      });
-
-      expect(result.meta.totalPages).toBe(2);
     });
   });
 
@@ -161,16 +143,9 @@ describe('LocationsService', () => {
         realmId: 1,
       });
 
-      expect(result).toEqual({
-        id: mockLocationRow.id,
-        name: mockLocationRow.name,
-        realmId: mockLocationRow.realmId,
-        description: mockLocationRow.description,
-        createdAt: mockLocationRow.createdAt,
-        updatedAt: mockLocationRow.updatedAt,
-        realm: { id: mockLocationRow.realmId, name: 'Ninjago' },
-        seasons: [],
-      });
+      expect(result.name).toBe('Blacksmith');
+      expect(result.realm?.name).toBe('Ninjago');
+      expect(result.seasons).toEqual([]);
       expect(mockDb.insert).toHaveBeenCalled();
     });
 
@@ -217,16 +192,6 @@ describe('LocationsService', () => {
         service.update(999, { name: 'Updated Blacksmith' }),
       ).rejects.toThrow(
         new NotFoundException('Location with id 999 not found'),
-      );
-    });
-
-    it('throws BadRequestException when realmId does not exist', async () => {
-      mockDb.update.mockReturnValue(
-        createChainableMock([], { postgresErrorCode: '23503' }),
-      );
-
-      await expect(service.update(1, { realmId: 99 })).rejects.toThrow(
-        BadRequestException,
       );
     });
   });

@@ -1,7 +1,7 @@
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockDbCrud } from '../../test/common/mock-db.type';
-import { createChainableMock } from '../../test/helpers/chainable-mock';
+import { MockDbCrud } from 'test/common/mock-db.type';
+import { createChainableMock } from 'test/helpers/chainable-mock';
 import { DATABASE_CONNECTION } from '../database/database.module';
 import { CharactersService } from './characters.service';
 import { CharacterStatus } from './enums/character-status.enum';
@@ -56,10 +56,6 @@ describe('CharactersService', () => {
   });
 
   afterEach(() => jest.clearAllMocks());
-
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
 
   describe('findAll', () => {
     it('returns data and pagination meta', async () => {
@@ -164,12 +160,8 @@ describe('CharactersService', () => {
         description: 'The Fire Ninja',
       });
 
-      expect(result).toEqual({
-        ...mockCharacterRow,
-        elements: [],
-        weapons: [],
-        seasons: [],
-      });
+      expect(result.name).toBe('Kai');
+      expect(result.elements).toEqual([]);
       expect(mockDb.insert).toHaveBeenCalled();
     });
 

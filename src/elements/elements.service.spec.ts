@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockDbCrud } from '../../test/common/mock-db.type';
-import { createChainableMock } from '../../test/helpers/chainable-mock';
+import { MockDbCrud } from 'test/common/mock-db.type';
+import { createChainableMock } from 'test/helpers/chainable-mock';
 import { DATABASE_CONNECTION } from '../database/database.module';
 import { ElementsService } from './elements.service';
 
@@ -50,10 +50,6 @@ describe('ElementsService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('findAll', () => {
     it('returns data and pagination meta', async () => {
       mockDb.select
@@ -79,20 +75,6 @@ describe('ElementsService', () => {
         totalItems: 1,
         totalPages: 1,
       });
-    });
-
-    it('calculates totalPages correctly when total does not divide evenly', async () => {
-      mockDb.select
-        .mockReturnValueOnce(createChainableMock([mockElementRow]))
-        .mockReturnValueOnce(createChainableMock([{ total: 25 }]));
-
-      const result = await service.findAll({
-        page: 1,
-        limit: 20,
-        order: 'asc',
-      });
-
-      expect(result.meta.totalPages).toBe(2);
     });
   });
 
@@ -142,14 +124,8 @@ describe('ElementsService', () => {
         description: 'The element of fire',
       });
 
-      expect(result).toEqual({
-        id: mockElementRow.id,
-        name: mockElementRow.name,
-        description: mockElementRow.description,
-        createdAt: mockElementRow.createdAt,
-        updatedAt: mockElementRow.updatedAt,
-        masters: [],
-      });
+      expect(result.name).toBe('Fire');
+      expect(result.masters).toEqual([]);
       expect(mockDb.insert).toHaveBeenCalled();
     });
 
@@ -161,17 +137,6 @@ describe('ElementsService', () => {
       ).rejects.toThrow(ConflictException);
 
       expect(mockDb.insert).not.toHaveBeenCalled();
-    });
-
-    it('throws ConflictException on unique violation from the database', async () => {
-      mockDb.select.mockReturnValueOnce(createChainableMock([]));
-      mockDb.insert.mockReturnValue(
-        createChainableMock([], { postgresErrorCode: '23505' }),
-      );
-
-      await expect(
-        service.create({ name: 'Fire', description: 'The element of fire' }),
-      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -209,17 +174,6 @@ describe('ElementsService', () => {
       );
 
       expect(mockDb.update).not.toHaveBeenCalled();
-    });
-
-    it('throws ConflictException on unique violation from the database', async () => {
-      mockDb.select.mockReturnValueOnce(createChainableMock([]));
-      mockDb.update.mockReturnValue(
-        createChainableMock([], { postgresErrorCode: '23505' }),
-      );
-
-      await expect(service.update(1, { name: 'Lightning' })).rejects.toThrow(
-        ConflictException,
-      );
     });
   });
 

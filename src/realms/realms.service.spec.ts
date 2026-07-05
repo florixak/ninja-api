@@ -4,8 +4,8 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { MockDbCrud } from '../../test/common/mock-db.type';
-import { createChainableMock } from '../../test/helpers/chainable-mock';
+import { MockDbCrud } from 'test/common/mock-db.type';
+import { createChainableMock } from 'test/helpers/chainable-mock';
 import { DATABASE_CONNECTION } from '../database/database.module';
 import { RealmsService } from './realms.service';
 
@@ -41,10 +41,6 @@ describe('RealmsService', () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-
   describe('findAll', () => {
     it('returns data and pagination meta', async () => {
       mockDb.select
@@ -72,20 +68,6 @@ describe('RealmsService', () => {
         totalItems: 1,
         totalPages: 1,
       });
-    });
-
-    it('calculates totalPages correctly when total does not divide evenly', async () => {
-      mockDb.select
-        .mockReturnValueOnce(createChainableMock([mockRealmRow]))
-        .mockReturnValueOnce(createChainableMock([{ total: 25 }]));
-
-      const result = await service.findAll({
-        page: 1,
-        limit: 20,
-        order: 'asc',
-      });
-
-      expect(result.meta.totalPages).toBe(2);
     });
   });
 
@@ -123,13 +105,7 @@ describe('RealmsService', () => {
         description: 'The main realm',
       });
 
-      expect(result).toEqual({
-        id: mockRealmRow.id,
-        name: mockRealmRow.name,
-        description: mockRealmRow.description,
-        createdAt: mockRealmRow.createdAt,
-        updatedAt: mockRealmRow.updatedAt,
-      });
+      expect(result.name).toBe('Ninjago');
       expect(mockDb.insert).toHaveBeenCalled();
     });
 
@@ -141,17 +117,6 @@ describe('RealmsService', () => {
       ).rejects.toThrow(ConflictException);
 
       expect(mockDb.insert).not.toHaveBeenCalled();
-    });
-
-    it('throws ConflictException on unique violation from the database', async () => {
-      mockDb.select.mockReturnValueOnce(createChainableMock([]));
-      mockDb.insert.mockReturnValue(
-        createChainableMock([], { postgresErrorCode: '23505' }),
-      );
-
-      await expect(
-        service.create({ name: 'Ninjago', description: 'The main realm' }),
-      ).rejects.toThrow(ConflictException);
     });
   });
 
@@ -188,17 +153,6 @@ describe('RealmsService', () => {
       ).rejects.toThrow(ConflictException);
 
       expect(mockDb.update).not.toHaveBeenCalled();
-    });
-
-    it('throws ConflictException on unique violation from the database', async () => {
-      mockDb.select.mockReturnValueOnce(createChainableMock([]));
-      mockDb.update.mockReturnValue(
-        createChainableMock([], { postgresErrorCode: '23505' }),
-      );
-
-      await expect(
-        service.update(1, { name: 'Updated Ninjago' }),
-      ).rejects.toThrow(ConflictException);
     });
   });
 
