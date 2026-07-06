@@ -10,6 +10,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const configService = app.get(AppConfigService);
 
   app.set('trust proxy', 1);
 
@@ -39,19 +40,19 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
 
-  const config = new DocumentBuilder()
+  const builder = new DocumentBuilder()
     .setTitle('Spinjitzu API')
     .setDescription('Public REST API focused on the Ninjago universe')
-    .setVersion('1.0')
-    .addBearerAuth()
-    .build();
+    .setVersion('1.0');
 
-  const document = SwaggerModule.createDocument(app, config);
-  const configService = app.get(AppConfigService);
-  if (!configService.isProduction) {
-    SwaggerModule.setup('docs', app, document);
+  if (configService.nodeEnv !== 'production') {
+    builder.addBearerAuth();
   }
 
+  const config = builder.build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
   await app.listen(configService.port);
 }
 bootstrap();
