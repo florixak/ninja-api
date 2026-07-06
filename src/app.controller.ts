@@ -1,14 +1,24 @@
 import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
-import { PublicRead } from './common/decorators/public-read.decorator';
+import { ApiExcludeEndpoint } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
-
   @Get()
-  @PublicRead()
-  getHello(): string {
-    return this.appService.getHello();
+  @ApiExcludeEndpoint()
+  getVersionedRoot() {
+    return {
+      name: 'Spinjitzu API',
+      version: 'v1',
+      docs: '/docs',
+      endpoints: [
+        '/characters',
+        '/seasons',
+        '/elements',
+        '/weapons',
+        '/locations',
+        '/realms',
+        '/health',
+      ],
+    };
   }
 }
