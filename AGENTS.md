@@ -163,12 +163,27 @@ actually necessary).
   concern — it preserves source history, it does not by itself keep v1 "live" if the
   deployed code changes.
 
-## V2 Roadmap (not implemented in V1, noted for future reference)
 
-- **Personal Access Tokens (PAT)** — planned addition alongside JWT auth. Will
-  require a new `api_tokens` table (hashed token, `user_id`, `expires_at`, `scopes`)
-  and a dedicated Guard/strategy that validates against that table instead of a
-  signed JWT. Out of scope for V1.
+## V2 Roadmap (not implemented in V1, noted for future reference)
+ 
+- **Personal Access Tokens (PAT)** — planned addition alongside JWT auth, for
+  regular API consumers (not just admin). Any user who wants to use the API will
+  register and receive their own PAT (role `USER`), separate from the existing
+  admin JWT login (role `ADMIN`).
+  - Requires a new `api_tokens` table (hashed token, `user_id`, `expires_at`,
+    `scopes`) and a dedicated `PersonalAccessTokenStrategy` (Passport) that
+    validates against that table instead of a signed JWT.
+  - Because both JWT and PAT arrive via the same `Authorization: Bearer` header,
+    protected routes that must accept either use a combined Passport guard:
+    `@UseGuards(AuthGuard(['jwt', 'personal-access-token']))`. Passport tries
+    each named strategy in order until one succeeds.
+  - Both strategies' `validate()` must return the same shape (`sub`, `email`,
+    `role`) so the existing `RolesGuard`/`@Roles()` mechanism keeps working
+    unchanged regardless of which strategy authenticated the request.
+  - Likely purpose of PAT: per-user rate limiting/usage tracking instead of
+    per-IP, not necessarily write access (admin-only writes can remain
+    JWT + `Role.ADMIN` only, unless decided otherwise during V2 design).
+  - Out of scope for V1.
 
 ## Conventions for the agent
 

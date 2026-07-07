@@ -39,6 +39,7 @@ export class SeasonQueryDto extends PaginationQueryDto {
   @Type(() => Number)
   @IsInt({ message: 'number must be an integer' })
   @Min(0, { message: 'number must be at least 0' })
+  @Max(999, { message: 'number must not exceed 999' })
   number?: number;
 
   @ApiPropertyOptional({
@@ -47,7 +48,7 @@ export class SeasonQueryDto extends PaginationQueryDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt({ message: 'releaseYear must be an integer' })
-  @Min(1900, { message: 'releaseYear must be at least 1900' })
+  @Min(2011, { message: 'releaseYear must be at least 2011' })
   @Max(2100, { message: 'releaseYear must not exceed 2100' })
   releaseYear?: number;
 

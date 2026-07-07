@@ -15,6 +15,7 @@ import { WeaponsModule } from './weapons/weapons.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 import { HealthModule } from './health/health.module';
+import { RootController } from './root.controller';
 
 @Module({
   imports: [
@@ -48,7 +49,7 @@ import { HealthModule } from './health/health.module';
     WeaponsModule,
     HealthModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, RootController],
   providers: [
     AppService,
     {
