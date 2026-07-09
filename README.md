@@ -23,10 +23,10 @@ All versioned resources live under:
 | **OpenAPI docs** | `GET /docs` |
 | **Health check** | `GET /api/v1/health` |
 
-Replace the host with your deployment URL. Example:
+Example:
 
 ```bash
-curl https://your-host.example.com/api/v1/characters
+curl https://spinjitzu-api.vercel.app/api/v1/characters
 ```
 
 ## Resources
